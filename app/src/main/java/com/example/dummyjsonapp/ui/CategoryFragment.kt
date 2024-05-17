@@ -6,9 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.NavType
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.navArgument
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dummyjsonapp.Adapter.CategoryAdapter
 import com.example.dummyjsonapp.MyApplication
+import com.example.dummyjsonapp.R
 import com.example.dummyjsonapp.database.DBHelper
 import com.example.dummyjsonapp.databinding.FragmentCategoryBinding
 import com.example.dummyjsonapp.domain.NetworkModule
@@ -57,7 +61,7 @@ class CategoryFragment : Fragment() {
 
                     CoroutineScope(Dispatchers.Main).launch {
                         binding?.recyclerview?.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-                        binding?.recyclerview?.adapter = CategoryAdapter(categoryList)
+                        binding?.recyclerview?.adapter = CategoryAdapter(categoryList, ::navigatetoProducts)
                     }
                 }
                 println("qq -> $response")
@@ -72,9 +76,14 @@ class CategoryFragment : Fragment() {
 
         CoroutineScope(Dispatchers.Main).launch {
             binding?.recyclerview?.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-            binding?.recyclerview?.adapter = CategoryAdapter(categoryList)
+            binding?.recyclerview?.adapter = CategoryAdapter(categoryList, ::navigatetoProducts)
         }
     }
 
+    fun navigatetoProducts(categoryName: String) {
+        val bundle = Bundle()
+        bundle.putString("categoryName", categoryName)
+        findNavController().navigate(R.id.action_categoryFragment_to_productFragment, bundle)
+    }
 
 }

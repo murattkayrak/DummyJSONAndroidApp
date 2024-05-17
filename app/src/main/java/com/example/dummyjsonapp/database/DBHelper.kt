@@ -99,6 +99,11 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
         return db.rawQuery("SELECT * FROM $PRODUCT_TABLE_NAME", null)
     }
 
+    fun getProduct(categoryName: String): Cursor? {
+        val db = this.readableDatabase
+        return db.rawQuery("SELECT * FROM $PRODUCT_TABLE_NAME WHERE category = ?", arrayOf(categoryName))
+    }
+
     fun getProduct(productId: Int): Cursor? {
         val db = this.readableDatabase
         return db.rawQuery("SELECT * FROM $PRODUCT_TABLE_NAME WHERE id = ?", arrayOf(productId.toString()))
@@ -126,9 +131,13 @@ class DBHelper(context: Context, factory: SQLiteDatabase.CursorFactory?) :
     }
 
     @SuppressLint("Range")
-    fun getProductList(): ArrayList<Product> {
+    fun getProductList(categoryName: String?): ArrayList<Product> {
         val productList: ArrayList<Product> = ArrayList()
-        val cursor = getProduct()
+        val cursor = if (!categoryName.isNullOrEmpty()) {
+            getProduct(categoryName)
+        } else {
+            getProduct()
+        }
         if (cursor!!.moveToFirst()) {
             do {
                 val product = Product(

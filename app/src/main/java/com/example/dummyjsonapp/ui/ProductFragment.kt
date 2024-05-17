@@ -13,6 +13,7 @@ import com.example.dummyjsonapp.database.DBHelper
 import com.example.dummyjsonapp.databinding.FragmentProductBinding
 import com.example.dummyjsonapp.domain.NetworkModule
 import com.example.dummyjsonapp.domain.product.ProductService
+import com.example.dummyjsonapp.entity.Product
 import com.example.dummyjsonapp.viewModel.ProductViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +34,8 @@ class ProductFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding?.productFragment = this
         binding?.viewModel = productViewModel
-        getProductDataFromDB()
+        val categoryName = arguments?.getString("categoryName")
+        getProductDataFromDB(categoryName)
     }
 
     override fun onDestroyView() {
@@ -56,9 +58,9 @@ class ProductFragment : Fragment() {
         }
     }
 
-    fun getProductDataFromDB() {
+    fun getProductDataFromDB(categoryName: String?) {
         val db = DBHelper(requireContext(), null)
-        val productList = db.getProductList()
+        val productList = db.getProductList(categoryName)
 
         CoroutineScope(Dispatchers.Main).launch {
             binding?.recyclerview?.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
